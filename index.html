@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine's Journey ❤️</title>
+  <style>
+    /* Base Reset & Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #000;
+      color: #666;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background-color 1s ease, color 1s ease;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+    }
+    main {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      animation: fadeIn 1s ease-in;
+      position: relative;
+      z-index: 3;
+    }
+    button {
+      padding: 12px 30px;
+      margin: 15px;
+      border: none;
+      border-radius: 25px;
+      background: #e91e63;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      z-index: 3;
+    }
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff4081;
+    }
+    .no-btn {
+      background: #555;
+    }
+    .step {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .step.active {
+      display: block;
+      opacity: 1;
+    }
+    /* Balloons */
+    .balloon {
+      position: absolute;
+      font-size: 2rem;
+      top: 100vh; /* Start at bottom */
+      animation: float 8s ease-in infinite;
+      z-index: 1;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(-200vh); opacity: 0; }
+    }
+    /* Cat Paws Animation */
+    .cat {
+      position: absolute;
+      font-size: 2rem;
+      bottom: 10px;
+      z-index: 1;
+    }
+    @keyframes catRunLTR {
+      0% { transform: translateX(-50px); }
+      100% { transform: translateX(110vw); }
+    }
+    @keyframes catRunRTL {
+      0% { transform: translateX(110vw); }
+      100% { transform: translateX(-50px); }
+    }
+    /* Zoom Suspense Animation for Step 5 */
+    @keyframes zoomPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    /* Fade In */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    /* Envelope & Paper Structure */
+    .envelope {
+      width: 250px;
+      height: 150px;
+      background: #fff;
+      position: relative;
+      margin: 20px auto;
+      cursor: pointer;
+      transition: transform 0.5s ease;
+      z-index: 3;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    /* Flap element for envelope */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #ff4081;
+      transform-origin: top;
+      transition: transform 0.7s ease;
+      z-index: 4;
+      border-radius: 10px 10px 0 0;
+    }
+    /* Paper element that slides out */
+    .paper {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      padding: 15px;
+      font-size: 1.1rem;
+      color: #333;
+      border-radius: 0 0 10px 10px;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: transform 0.7s ease, opacity 0.7s ease;
+      white-space: pre-wrap;
+      z-index: 5;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    /* Final prompt text positioned above the envelope */
+    #finalPrompt {
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+      z-index: 3;
+      position: relative;
+    }
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff0;
+      animation: confetti-fall 5s linear infinite;
+      z-index: 1; /* Behind the text */
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-10vh) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(720deg); }
+    }
+    /* Floating Hearts */
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: #ff4081;
+      animation: float-heart 6s ease-in infinite;
+      z-index: 1; /* Behind the text */
+    }
+    @keyframes float-heart {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="backgroundMusic" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <main>
+    <!-- Step 1: Turn on the Lights -->
+    <section class="step active" id="step1">
+      <h2>Let's turn on the lights?</h2>
+      <button data-next="step2" class="yes-btn">Yes</button>
+      <button class="no-btn">No</button>
+    </section>
+    <!-- Step 2: Release the Balloons -->
+    <section class="step" id="step2">
+      <h2>Release the balloons?</h2>
+      <button data-next="step3" class="yes-btn">Yes</button>
+      <button class="no-btn">No</button>
+    </section>
+    <!-- Step 3: Release the Cats -->
+    <section class="step" id="step3">
+      <h2>Release the cats?</h2>
+      <button data-next="step4" class="yes-btn">Yes</button>
+      <button class="no-btn">No</button>
+    </section>
+    <!-- Step 4: Are you ready, my love? -->
+    <section class="step" id="step4">
+      <h2>Are you ready, my love?</h2>
+      <button data-next="step5" class="yes-btn">Yes</button>
+      <button class="no-btn">No</button>
+    </section>
+    <!-- Step 5: Are you sure?? (Zoom Suspense Effect) -->
+    <section class="step" id="step5">
+      <h2 style="animation: zoomPulse 2s infinite;">Are you sure??</h2>
+      <button data-next="step6" class="yes-btn">Yes</button>
+      <button class="no-btn">No</button>
+    </section>
+    <!-- Step 6: Final Prompt with Envelope -->
+    <section class="step" id="step6">
+      <h2 id="finalPrompt">Will you please open it, darling?</h2>
+      <div class="envelope" id="envelope">
+        <div class="flap" id="flap"></div>
+        <div class="paper" id="paper"></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function() {
+      let currentStep = 1;
+      const yesButtons = document.querySelectorAll('.yes-btn');
+      const noButtons = document.querySelectorAll('.no-btn');
+
+      // "No" button handler: alert and reload
+      function handleNo() {
+        alert("Hey, that's rudee!!");
+        window.location.reload();
+      }
+
+      // Transition to the next step
+      function goToStep(nextStepId) {
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        currentStep++;
+        const nextStep = document.getElementById(nextStepId);
+        if (nextStep) {
+          nextStep.classList.add('active');
+          // Visual tweaks for specific steps:
+          switch(nextStepId) {
+            case 'step2':
+              // Change background to pink and text to cream
+              document.body.style.backgroundColor = '#ff69b4';
+              document.body.style.color = '#f5f5dc';
+              break;
+            case 'step3':
+              // Create balloons in step 2 (balloons appear in step 2, then in step 3 we trigger cats)
+              createBalloons(15);
+              break;
+            case 'step4':
+              // Release cat paw emojis running across the screen
+              createCats(6);
+              break;
+            // Steps 5 and 6 need no extra visual tweaks here.
+          }
+        }
+      }
+
+      // Attach event listeners to "Yes" buttons
+      yesButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const nextStep = btn.getAttribute('data-next');
+          if (nextStep) goToStep(nextStep);
+        });
+      });
+
+      // Attach event listeners to "No" buttons
+      noButtons.forEach(btn => {
+        btn.addEventListener('click', handleNo);
+      });
+
+      // Function to create balloon elements
+      function createBalloons(count) {
+        for (let i = 0; i < count; i++) {
+          const balloon = document.createElement('div');
+          balloon.classList.add('balloon');
+          balloon.innerHTML = '🎈';
+          balloon.style.left = Math.random() * 100 + 'vw';
+          balloon.style.top = '100vh';
+          balloon.style.animationDelay = Math.random() * 3 + 's';
+          document.body.appendChild(balloon);
+        }
+      }
+
+      // Function to create cat paw emojis that run across the screen
+      function createCats(count) {
+        for (let i = 0; i < count; i++) {
+          const cat = document.createElement('div');
+          cat.classList.add('cat');
+          cat.innerHTML = '🐾';
+          // Randomly choose a starting side and assign the appropriate animation
+          if (Math.random() < 0.5) {
+            cat.style.left = '-50px';
+            cat.style.animationName = 'catRunLTR';
+          } else {
+            cat.style.left = '100vw';
+            cat.style.animationName = 'catRunRTL';
+          }
+          cat.style.bottom = Math.random() * 20 + 'px';
+          cat.style.animationDuration = (Math.random() * 2 + 3) + 's';
+          cat.style.animationDelay = Math.random() * 2 + 's';
+          document.body.appendChild(cat);
+        }
+      }
+
+      // Envelope opening animation for final love note
+      const envelope = document.getElementById('envelope');
+      const flap = document.getElementById('flap');
+      const paper = document.getElementById('paper');
+
+      envelope.addEventListener('click', function() {
+        // Animate the flap opening by rotating it upward
+        flap.style.transform = 'rotateX(-180deg)';
+        setTimeout(() => {
+          // Slide paper upward and fade in while still inside envelope
+          paper.style.transform = 'translateY(0)';
+          paper.style.opacity = '1';
+          setTimeout(() => {
+            // Reparent paper to main so it's not hidden by envelope
+            document.querySelector('main').appendChild(paper);
+            // Hide the envelope (but leave the paper visible)
+            envelope.style.display = 'none';
+            // Optionally, hide the final prompt text if desired
+            const finalPrompt = document.getElementById('finalPrompt');
+            if(finalPrompt) finalPrompt.style.display = 'none';
+            // Start typewriter effect for the final message
+            typeWriter(paper, `To My Motichurr,
+My forever Valentine,
+My Home, Peace, and Hope
+
+Happy Valentine's Day, My Love!
+Thank you for always staying by my side, even when you had your own struggles. You've shown me what true and unconditional love really means.
+
+And now... it's my turn. To show you how much I love you, how much you mean to me, and what I'm ready to do to always have you by my side.
+
+I've written -- lines of code,
+It took me 7 days, 18 hours, and 35 minutes to get this running,
+After 617 errors and nearly 45 prompts on ChatGPT and DeepSeek combined.
+And I finally made it.
+
+This isn't even 1% of what I'm ready to do for you. We will make it together, and your Agnel will become the man you always dreamt of.
+
+So, are you ready for sunbathing in Goa? Exploring Cat Island? A vacation in Switzerland? And a honeymoon in a penthouse in Paris with a view of the Eiffel Tower?
+
+But for now, just come back and ask me...
+"Hey babe, what's the plan now?" 💛`);
+
+            // Add confetti explosion
+            createConfetti(100);
+            // Add floating hearts
+            createHearts(20);
+          }, 700);
+        }, 700);
+      });
+
+      // Initialize paper element: start off hidden below the envelope
+      paper.style.transform = 'translateY(100%)';
+      paper.style.opacity = '0';
+
+      // Typewriter effect function
+      function typeWriter(element, text, i = 0) {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          setTimeout(() => typeWriter(element, text, i + 1), 50);
+        }
+      }
+
+      // Function to create confetti
+      function createConfetti(count) {
+        for (let i = 0; i < count; i++) {
+          const confetti = document.createElement('div');
+          confetti.classList.add('confetti');
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+          confetti.style.animationDelay = Math.random() * 2 + 's';
+          document.body.appendChild(confetti);
+        }
+      }
+
+      // Function to create floating hearts
+      function createHearts(count) {
+        for (let i = 0; i < count; i++) {
+          const heart = document.createElement('div');
+          heart.classList.add('heart');
+          heart.innerHTML = '❤️';
+          heart.style.left = Math.random() * 100 + 'vw';
+          heart.style.animationDelay = Math.random() * 3 + 's';
+          document.body.appendChild(heart);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
